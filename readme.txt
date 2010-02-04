@@ -11,6 +11,8 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 == Description ==
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
 
+Take a look on the changelog for the incomming features
+
 == Installation ==
 1. Upload the folder `fscharts` to the `/wp-content/plugins/` directory
 2. Set the rights on the folder `/fscharts/out` to 777 (output folder for charts images)
@@ -25,6 +27,12 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 1. The widget on the dashboard (version 1.0.0)
 
 == Changelog ==
+
+= Roadmap 1.1.0 =
+* l18n
+* l10n
+* Widget configuration
+* Visits on chart too
 
 = 1.0.0 =
 * First version

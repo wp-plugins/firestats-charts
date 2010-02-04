@@ -279,7 +279,8 @@ if (isset($fscPi)) {
 	//register_activation_hook(__FILE__, array(&$fscPi, 'install'));
 
   function fsc_install_widget() {
-    wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_dashboard_widget');
+    //wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_dashboard_widget');
+		wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', array(&$fcePi, 'installWidget'));
   }
 	
 }

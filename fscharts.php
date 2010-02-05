@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.0.0
+Version: 1.1.0
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -59,7 +59,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		// Plugin's key
 		protected $piKey = 'wp-fscharts-pi';
     // Plugin's version
-    protected $version = '1.0.0';
+    protected $version = '1.1.0';
 		
 		
 		
@@ -105,11 +105,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		}
 		
 		/**
-		 * Install le plugin
+		 * Install the plugin
 		 *
 		 * @param 	void
 		 * @return 	void
 		 * @access 	public
+     * @since   1.1.0
 		 */
 		public function install() {
 			
@@ -145,6 +146,73 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			}
 			
 		}
+
+
+    /**
+		 * Install the widget on the dashboard
+		 *
+		 * @param 	void
+		 * @return 	void
+		 * @access 	public
+     * @since   1.1.0
+		 */
+    public function installWidget() {
+
+      global $wpdb;
+
+      // Get datas from firestats table
+      $graph = new Graph(650, 380);
+      $graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
+      $graph->SetMargin(40,30,40,100);
+      $graph->title->Set('FireStats Charts');
+      $graph->xaxis->SetLabelAngle(90);
+      $graph->xaxis->title->Set('Days');
+      $graph->yaxis->title->Set('Hits');
+
+      // Create the linear plot
+      $hits = $this->getHits();
+      $lineplot = new LinePlot($hits['datas']);
+      $graph->xaxis->SetTickLabels($hits['labels']);
+
+      $lineplot->SetFillColor('orange@0.5');
+      $lineplot->value->Show();
+      $lineplot->value->SetColor('darkred');
+      //$lineplot->value->SetFont('', '', 8);
+      $lineplot->value->SetFormat('%d');
+
+      // Add the plot to the graph
+      $graph->Add($lineplot);
+
+
+      $graph->Stroke(dirname(__FILE__).'/out/graph.png');
+
+      // Open the box
+      $out = '<div style="text-align: center;">';
+      
+      // Configuration panel rendering
+      $out .= '<div id="widgetConfigPanel">';
+			$out .= '<form method="post" action="'.get_option('home').'/wp-admin/" name="fschartsPanelForm" id="fschartsPanelForm">';
+			$out .= '<input type="hidden" name="'.$this->piKey.'[submitted]" id="fscSubmitted" value="1" />';
+			$out .= '<input type="hidden" name="'.$this->piKey.'[task]" id="fscTask" value="config" />';
+			
+      $out .= '<div id="widgetLeftPanel">';
+      $out .= $this->getLeftPanelHTML();
+      $out .= '</div>';
+			
+      $out .= '<div id="widgetRightPanel">';
+      $out .= $this->getRightPanelHTML();
+      $out .= '</div>';
+			
+      $out .= '</div>';
+      
+      // The chart
+      $out .= '<img src="http://www.ansermot.ch/wp-content/plugins/fscharts/out/graph.png" alt="FireStats Graph" />';
+
+      // Close the box...
+      $out .=' </div>';
+      echo $out;
+
+    }
 		
 		
 		
@@ -182,53 +250,40 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		
 		
 		
-	
-	
-	
-	
+		
+		
 		
 		/**********************************************
 		 *
-		 *          ADMIN PART
+		 *          RENDERING PART
 		 *
-		 */	
-		
+		 */
 		
 		/**
-		 * Ajoute le menu d'admin du plugin
+		 * Create the HTML for the left panel
 		 *
-		 * @param	void
+		 * @param 	void
 		 * @return 	void
 		 * @access 	public
 		 */
-		public function adminMenu() {
-		
-			// In 1.1.0
-			
-			//add_options_page('Firestats Charts', 'Firestats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
-			
-			// Inscrit les JS supplémentaires
-			//wp_register_script('JQuery', get_option('home').'/wp-includes/js/jquery/jquery.js');
-			//wp_enqueue_script('JQuery');
-
+		public function getLeftPanelHTML() {
+			return 'Left';
 		}
+		
 		
 		
 		/**
-		 * Affiche la page des options
+		 * Create the HTML for the right panel
 		 *
-		 * @param	void
+		 * @param 	void
 		 * @return 	void
 		 * @access 	public
 		 */
-		public function adminMenuOptionPage() {
-			// In 1.1.0
+		public function getRightPanelHTML() {
+			return 'Right';
 		}
-		
-		
 	}
 }
-
 
 
 
@@ -263,6 +318,19 @@ if (class_exists('FsCharts') && !isset($fscPi) && !isset($GLOBALS['fscPi'])) {
 	
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
 /**********************************************
  *
  *          Hooks management
@@ -277,13 +345,41 @@ if (isset($fscPi)) {
 	//add_action('admin_menu', array(&$fscPi, 'adminMenu'));
 	// Register activation hook function
 	//register_activation_hook(__FILE__, array(&$fscPi, 'install'));
-
+	
+	/**
+	 * Add the widget to the dashboard
+	 *
+	 * @param	void
+	 * @return 	void
+	 * @access 	public
+	 */
   function fsc_install_widget() {
-    //wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_dashboard_widget');
-		wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', array(&$fcePi, 'installWidget'));
+		wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_installWidget');
   }
 	
+	
+	
 }
+
+/**
+ * Install the widget on the dashboard
+ *
+ * @param	void
+ * @return 	void
+ * @access 	public
+ */
+function fsc_installWidget() {
+	global $fscPi;
+	$fscPi->installWidget();
+}
+
+
+
+
+
+
+
+
 
 
 
@@ -292,53 +388,6 @@ if (isset($fscPi)) {
  *          Template Tags
  *
  */
-
-function fsc_dashboard_widget() {
-
-  global $wpdb;
-	global $fscPi;
-
-  // Get datas from firestats table
-  $graph = new Graph(650, 380);
-  $graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
-  $graph->SetMargin(40,30,40,100);
-  $graph->title->Set('FireStats Charts');
-  $graph->xaxis->SetLabelAngle(90);
-  $graph->xaxis->title->Set('Days');
-  $graph->yaxis->title->Set('Hits');
-
-  // Create the linear plot
-  $hits = $fscPi->getHits();
-  $lineplot = new LinePlot($hits['datas']);
-  $graph->xaxis->SetTickLabels($hits['labels']);
-	
-  $lineplot->SetFillColor('orange@0.5');
-  $lineplot->value->Show();
-  $lineplot->value->SetColor('darkred');
-  //$lineplot->value->SetFont('', '', 8);
-  $lineplot->value->SetFormat('%d');
-
-  // Add the plot to the graph
-  $graph->Add($lineplot);
-	
-
-  $graph->Stroke(dirname(__FILE__).'/out/graph.png');
-
-  echo '<div style="text-align: center;"><img src="http://www.ansermot.ch/wp-content/plugins/fscharts/out/graph.png" alt="FireStats Graph" /></div>';
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

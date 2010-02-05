@@ -34,6 +34,9 @@ Take a look on the changelog for the incomming features
 * Widget configuration
 * Visits on chart too
 
+= 1.1.0 =
+* Moved the widget install method inside the class plugin [FsCharts->installWidget()]
+
 = 1.0.0 =
 * First version
 * Simply display a chart on the dashboard with the hits of the last month

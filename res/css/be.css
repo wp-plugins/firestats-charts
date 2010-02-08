@@ -1,0 +1,22 @@
+
+div.spacer { clear: both; }
+
+#widgetConfigPanel {
+	border: 1px solid #dddddd;
+	border-top: 0;
+	margin-top: 0;
+}
+
+#widgetConfigPanel #widgetLeftPanel {
+	float: left;
+	width: 100px;
+}
+
+#widgetConfigPanel #widgetRightPanel {
+	float: right;
+	width: 100px;
+}
+
+#widgetConfigPanel ul input {
+	width: 80px;
+}

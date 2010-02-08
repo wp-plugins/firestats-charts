@@ -36,6 +36,9 @@ Take a look on the changelog for the incomming features
 
 = 1.1.0 =
 * Moved the widget install method inside the class plugin [FsCharts->installWidget()]
+* Fixed plugin install method [FsCharts->install()]
+* Added widget configuration panel
+* Added fscharts/res/css/be.css for styling the BE widget
 
 = 1.0.0 =
 * First version

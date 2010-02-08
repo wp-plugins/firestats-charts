@@ -101,8 +101,11 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
       // Include jpgraph library
       require_once('res/jpgraph/jpgraph.php');
 			require_once('res/jpgraph/jpgraph_line.php');
-
+		
+			$this->additionnalHeaders();
+		
 		}
+
 		
 		/**
 		 * Install the plugin
@@ -161,7 +164,8 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
       global $wpdb;
 
       // Get datas from firestats table
-      $graph = new Graph(650, 380);
+      //$graph = new Graph(650, 380);
+			$graph = new Graph(get_option('fscharts_width'), get_option('fscharts_height'));
       $graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
       $graph->SetMargin(40,30,40,100);
       $graph->title->Set('FireStats Charts');
@@ -203,6 +207,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
       $out .= $this->getRightPanelHTML();
       $out .= '</div>';
 			
+			$out .= '<div class="spacer"></div>';
       $out .= '</div>';
       
       // The chart
@@ -267,7 +272,28 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @access 	public
 		 */
 		public function getLeftPanelHTML() {
-			return 'Left';
+		
+			$out = '<ul>';
+			$out .= '<li><label for="'.$this->piKey.'-width">Width :</label>';
+			$out .= '<input type="text" name="'.$this->pikey.'[width]" id="'.$this->piKey.'-width" value="'.get_option('fscharts_width').'" /></li>';
+			$out .= '<li><label for="'.$this->piKey.'-height">Height :</label>';
+			$out .= '<input type="text" name="'.$this->pikey.'[height]" id="'.$this->piKey.'-height" value="'.get_option('fscharts_height').'" /></li>';
+      
+			$checked = (get_option('fscharts_table') == 1) ? 'checked="checked" ' : '';
+			$out .= '<li><label for="'.$this->piKey.'-table">Display stats table :</label>';
+			$out .= '<input type="checkbox" name="'.$this->pikey.'[table]" id="'.$this->piKey.'-table" '.$checked.'/></li>';
+      
+			$checked = (get_option('fscharts_hits') == 1) ? 'checked="checked" ' : '';
+			$out .= '<li><label for="'.$this->piKey.'-hits">Display hits :</label>';
+			$out .= '<input type="checkbox" name="'.$this->pikey.'[hits]" id="'.$this->piKey.'-hits" '.$checked.'/></li>';
+			
+			$checked = (get_option('fscharts_visited') == 1) ? 'checked="checked" ' : '';
+      $out .= '<li><label for="'.$this->piKey.'-visits">Display visits :</label>';
+			$out .= '<input type="checkbox" name="'.$this->pikey.'[visits]" id="'.$this->piKey.'-visits" '.$checked.'/></li>';
+			$out .= '</ul>';
+			
+			return $out;
+			
 		}
 		
 		
@@ -280,8 +306,41 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @access 	public
 		 */
 		public function getRightPanelHTML() {
-			return 'Right';
+		
+			$out = '<ul>';
+			$out .= '<li><label for="'.$this->piKey.'-zoom-width">Zoom width :</label>';
+			$out .= '<input type="text" name="'.$this->pikey.'[zoom_width]" id="'.$this->piKey.'-zoom-width" value="'.get_option('fscharts_zoom_width').'" /></li>';
+			$out .= '<li><label for="'.$this->piKey.'-zoom-height">Zoom height :</label>';
+			$out .= '<input type="text" name="'.$this->pikey.'[zoom-height]" id="'.$this->piKey.'-zoom-height" value="'.get_option('fscharts_zoom_height').'" /></li>';
+      
+			$checked = (get_option('fscharts_zoom') == 1) ? 'checked="checked" ' : '';
+			$out .= '<li><label for="'.$this->piKey.'-table">Enable zoom :</label>';
+			$out .= '<input type="checkbox" name="'.$this->pikey.'[zoom]" id="'.$this->piKey.'-zoom" '.$checked.'/></li>';
+      
+			$out .= '</ul>';
+			
+			return $out;
+			
 		}
+		
+		/**********************************************
+		 *
+		 *          PROTECTED METHODS PART
+		 *
+		 */
+		
+		/**
+		 * Add Pi headers to WP <head>
+		 *
+		 * @param 	void
+		 * @return 	void
+		 * @access 	public
+		 */
+		protected function additionnalHeaders() {
+			wp_register_style('FsChartsBackend', '/wp-content/plugins/fscharts/res/css/be.css');
+			wp_enqueue_style('FsChartsBackend');
+		}
+		
 	}
 }
 
@@ -344,7 +403,7 @@ if (isset($fscPi)) {
 	// Add the admin menu entry
 	//add_action('admin_menu', array(&$fscPi, 'adminMenu'));
 	// Register activation hook function
-	//register_activation_hook(__FILE__, array(&$fscPi, 'install'));
+	register_activation_hook(__FILE__, array(&$fscPi, 'install'));
 	
 	/**
 	 * Add the widget to the dashboard

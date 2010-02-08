@@ -274,21 +274,21 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		public function getLeftPanelHTML() {
 		
 			$out = '<ul>';
-			$out .= '<li><label for="'.$this->piKey.'-width">Width :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-width">'.__('Width').' :</label>';
 			$out .= '<input type="text" name="'.$this->pikey.'[width]" id="'.$this->piKey.'-width" value="'.get_option('fscharts_width').'" /></li>';
-			$out .= '<li><label for="'.$this->piKey.'-height">Height :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-height">'.__('Height').' :</label>';
 			$out .= '<input type="text" name="'.$this->pikey.'[height]" id="'.$this->piKey.'-height" value="'.get_option('fscharts_height').'" /></li>';
       
 			$checked = (get_option('fscharts_table') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-table">Display stats table :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Display stats table').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[table]" id="'.$this->piKey.'-table" '.$checked.'/></li>';
       
 			$checked = (get_option('fscharts_hits') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-hits">Display hits :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-hits">'.__('Display hits').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[hits]" id="'.$this->piKey.'-hits" '.$checked.'/></li>';
 			
 			$checked = (get_option('fscharts_visited') == 1) ? 'checked="checked" ' : '';
-      $out .= '<li><label for="'.$this->piKey.'-visits">Display visits :</label>';
+      $out .= '<li><label for="'.$this->piKey.'-visits">'.__('Display visits').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[visits]" id="'.$this->piKey.'-visits" '.$checked.'/></li>';
 			$out .= '</ul>';
 			
@@ -308,14 +308,16 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		public function getRightPanelHTML() {
 		
 			$out = '<ul>';
-			$out .= '<li><label for="'.$this->piKey.'-zoom-width">Zoom width :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-zoom-width">'.__('Zoom width').' :</label>';
 			$out .= '<input type="text" name="'.$this->pikey.'[zoom_width]" id="'.$this->piKey.'-zoom-width" value="'.get_option('fscharts_zoom_width').'" /></li>';
-			$out .= '<li><label for="'.$this->piKey.'-zoom-height">Zoom height :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-zoom-height">'.__('Zoom height').' :</label>';
 			$out .= '<input type="text" name="'.$this->pikey.'[zoom-height]" id="'.$this->piKey.'-zoom-height" value="'.get_option('fscharts_zoom_height').'" /></li>';
       
 			$checked = (get_option('fscharts_zoom') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-table">Enable zoom :</label>';
+			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Enable zoom').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[zoom]" id="'.$this->piKey.'-zoom" '.$checked.'/></li>';
+			
+			$out .= '<li><input type="submit" name="'.$this->piKey.'[submit] id="'.$this->piKey.'-submit" value="'.__('Apply').'" /></li>';
       
 			$out .= '</ul>';
 			
@@ -338,7 +340,11 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 */
 		protected function additionnalHeaders() {
 			wp_register_style('FsChartsBackend', '/wp-content/plugins/fscharts/res/css/be.css');
+			wp_register_script('FsChartsBEeffects', '/wp-content/plugins/fscharts/res/scripts/beeffects.js');
+			
 			wp_enqueue_style('FsChartsBackend');
+			wp_enqueue_script("jquery");
+			wp_enqueue_script('FsChartsBEeffects');
 		}
 		
 	}

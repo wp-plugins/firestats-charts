@@ -39,6 +39,7 @@ Take a look on the changelog for the incomming features
 * Fixed plugin install method [FsCharts->install()]
 * Added widget configuration panel
 * Added fscharts/res/css/be.css for styling the BE widget
+* Config panel AJAX animation (No-JS compliant)
 
 = 1.0.0 =
 * First version

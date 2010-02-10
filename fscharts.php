@@ -40,12 +40,23 @@ if (stripos('wp-admin', $_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']) !== f
 }
 
 
+// *************************************
+// Check if FireStats is installed
+// *************************************
+
+$fsInstalled = true;
+if (!function_exists('fs_initialize_fs_callbacks')) {
+  echo 'FireStats Charts require <strong>FireStats >= 1.6.3</strong>';
+  $fsInstalled = false;
+}
+
+
 /**********************************************
  *
  *           Plugin's Class 
  *
  */
-if (!class_exists('FsCharts') && !$fsChartsDisabled) {
+if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
 
 	// *************************************
 	// Class declaration
@@ -120,7 +131,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			// For 1.1.0
 			
       // Check if pi is installed
-			$installed = get_option('fscharts_version', null);
+			$installed = $this->getPiVar('fscharts_version', null);
 			
 			// If not installed, add install it
 			if ($installed === null) {
@@ -139,14 +150,13 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
         add_option('fscharts_zoom_height', 600);
         add_option('fscharts_zoom_width', 800);
 
+        // Version number...
+        add_option('fscharts_version', $this->version);
       }
-			
-			// Update version number
-			if ($installed === null) {
-				add_option('fscharts_version', $this->version);
-			} else {
-				update_option('fscharts_version', $this->version);
-			}
+
+      // Make version changes updates
+      // (none)
+
 			
 		}
 
@@ -165,10 +175,10 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 
       // Get datas from firestats table
       //$graph = new Graph(650, 380);
-			$graph = new Graph(get_option('fscharts_width'), get_option('fscharts_height'));
+			$graph = new Graph((int)get_option('fscharts_width'), (int)get_option('fscharts_height'));
       $graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
       $graph->SetMargin(40,30,40,100);
-      $graph->title->Set('FireStats Charts');
+      $graph->title->Set(__('FireStats Charts (last 30 days)'));
       $graph->xaxis->SetLabelAngle(90);
       $graph->xaxis->title->Set('Days');
       $graph->yaxis->title->Set('Hits');
@@ -190,31 +200,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 
       $graph->Stroke(dirname(__FILE__).'/out/graph.png');
 
-      // Open the box
-      $out = '<div style="text-align: center;">';
-      
-      // Configuration panel rendering
-      $out .= '<div id="widgetConfigPanel">';
-			$out .= '<form method="post" action="'.get_option('home').'/wp-admin/" name="fschartsPanelForm" id="fschartsPanelForm">';
-			$out .= '<input type="hidden" name="'.$this->piKey.'[submitted]" id="fscSubmitted" value="1" />';
-			$out .= '<input type="hidden" name="'.$this->piKey.'[task]" id="fscTask" value="config" />';
-			
-      $out .= '<div id="widgetLeftPanel">';
-      $out .= $this->getLeftPanelHTML();
-      $out .= '</div>';
-			
-      $out .= '<div id="widgetRightPanel">';
-      $out .= $this->getRightPanelHTML();
-      $out .= '</div>';
-			
-			$out .= '<div class="spacer"></div>';
-      $out .= '</div>';
-      
-      // The chart
-      $out .= '<img src="http://www.ansermot.ch/wp-content/plugins/fscharts/out/graph.png" alt="FireStats Graph" />';
-
-      // Close the box...
-      $out .=' </div>';
+      $out = $this->getConfigPanelHTML();
       echo $out;
 
     }
@@ -241,7 +227,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			$ydata = array();
   		$days = array();
 			
-      $req = 'SELECT *,count(*) AS toto FROM '.$wpdb->prefix.'firestats_hits GROUP BY SUBSTRING(timestamp,1,10)';
+      $req = 'SELECT timestamp,count(*) AS toto FROM '.$wpdb->prefix.'firestats_hits GROUP BY SUBSTRING(timestamp,1,10)';
       $visites = $wpdb->get_results($req);
       foreach ($visites as $visite) {
         $ydata[] = $visite->toto;
@@ -263,31 +249,75 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 *          RENDERING PART
 		 *
 		 */
-		
-		/**
+
+
+    /**
 		 * Create the HTML for the left panel
 		 *
 		 * @param 	void
 		 * @return 	void
 		 * @access 	public
+     * @since   1.1.0
 		 */
-		public function getLeftPanelHTML() {
+    protected function getConfigPanelHTML() {
+
+      // Open the box
+      $out = '<div style="text-align: center;">';
+
+      // Configuration panel rendering
+      $out .= '<div id="widgetConfigPanel">';
+			$out .= '<form method="post" action="'.get_option('home').'/wp-admin/" name="fschartsPanelForm" id="fschartsPanelForm">';
+			$out .= '<input type="hidden" name="'.$this->piKey.'[submitted]" id="fscSubmitted" value="1" />';
+			$out .= '<input type="hidden" name="'.$this->piKey.'[task]" id="fscTask" value="config" />';
+
+      $out .= '<div id="widgetLeftPanel">';
+      $out .= $this->getLeftPanelHTML();
+      $out .= '</div>';
+
+      $out .= '<div id="widgetRightPanel">';
+      $out .= $this->getRightPanelHTML();
+      $out .= '</div>';
+
+			$out .= '<div class="spacer"></div>';
+      $out .= '</div>';
+
+      $out .= '<div id="widgetConfigShowButton" class="hideMe fsUp"></div>';
+
+      // The chart
+      $out .= '<img src="http://www.ansermot.ch/wp-content/plugins/fscharts/out/graph.png" alt="FireStats Graph" />';
+
+      // Close the box...
+      $out .=' </div>';
+
+      return $out;
+      
+    }
+
+
+		/**
+		 * Create the HTML for the left panel
+		 *
+		 * @param 	void
+		 * @return 	void
+		 * @access 	protected
+		 */
+		protected function getLeftPanelHTML() {
 		
 			$out = '<ul>';
 			$out .= '<li><label for="'.$this->piKey.'-width">'.__('Width').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[width]" id="'.$this->piKey.'-width" value="'.get_option('fscharts_width').'" /></li>';
+			$out .= '<input type="text" name="'.$this->pikey.'[width]" id="'.$this->piKey.'-width" value="'.$this->getPiVarInt('width').'" class="inputText" /></li>';
 			$out .= '<li><label for="'.$this->piKey.'-height">'.__('Height').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[height]" id="'.$this->piKey.'-height" value="'.get_option('fscharts_height').'" /></li>';
+			$out .= '<input type="text" name="'.$this->pikey.'[height]" id="'.$this->piKey.'-height" value="'.$this->getPiVarInt('height').'" class="inputText" /></li>';
       
-			$checked = (get_option('fscharts_table') == 1) ? 'checked="checked" ' : '';
+			$checked = ($this->getPiVarInt('table') == 1) ? 'checked="checked" ' : '';
 			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Display stats table').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[table]" id="'.$this->piKey.'-table" '.$checked.'/></li>';
       
-			$checked = (get_option('fscharts_hits') == 1) ? 'checked="checked" ' : '';
+			$checked = ($this->getPiVarInt('hits') == 1) ? 'checked="checked" ' : '';
 			$out .= '<li><label for="'.$this->piKey.'-hits">'.__('Display hits').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[hits]" id="'.$this->piKey.'-hits" '.$checked.'/></li>';
 			
-			$checked = (get_option('fscharts_visited') == 1) ? 'checked="checked" ' : '';
+			$checked = ($this->getPiVarInt('visited') == 1) ? 'checked="checked" ' : '';
       $out .= '<li><label for="'.$this->piKey.'-visits">'.__('Display visits').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[visits]" id="'.$this->piKey.'-visits" '.$checked.'/></li>';
 			$out .= '</ul>';
@@ -303,21 +333,21 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 *
 		 * @param 	void
 		 * @return 	void
-		 * @access 	public
+		 * @access 	protected
 		 */
-		public function getRightPanelHTML() {
+		protected function getRightPanelHTML() {
 		
 			$out = '<ul>';
 			$out .= '<li><label for="'.$this->piKey.'-zoom-width">'.__('Zoom width').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[zoom_width]" id="'.$this->piKey.'-zoom-width" value="'.get_option('fscharts_zoom_width').'" /></li>';
+			$out .= '<input type="text" name="'.$this->pikey.'[zoom_width]" id="'.$this->piKey.'-zoom-width" value="'.$this->getPiVarInt('zoom_width').'" class="inputText" /></li>';
 			$out .= '<li><label for="'.$this->piKey.'-zoom-height">'.__('Zoom height').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[zoom-height]" id="'.$this->piKey.'-zoom-height" value="'.get_option('fscharts_zoom_height').'" /></li>';
+			$out .= '<input type="text" name="'.$this->pikey.'[zoom-height]" id="'.$this->piKey.'-zoom-height" value="'.$this->getPiVarInt('zoom_height').'" class="inputText" /></li>';
       
-			$checked = (get_option('fscharts_zoom') == 1) ? 'checked="checked" ' : '';
+			$checked = ($this->getPiVarInt('zoom') == 1) ? 'checked="checked" ' : '';
 			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Enable zoom').' :</label>';
 			$out .= '<input type="checkbox" name="'.$this->pikey.'[zoom]" id="'.$this->piKey.'-zoom" '.$checked.'/></li>';
 			
-			$out .= '<li><input type="submit" name="'.$this->piKey.'[submit] id="'.$this->piKey.'-submit" value="'.__('Apply').'" /></li>';
+			$out .= '<li><input type="submit" name="'.$this->piKey.'[submit] id="'.$this->piKey.'-submit" value="'.__('Apply').'" class="inputButton" /></li>';
       
 			$out .= '</ul>';
 			
@@ -336,7 +366,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 *
 		 * @param 	void
 		 * @return 	void
-		 * @access 	public
+		 * @access 	protected
 		 */
 		protected function additionnalHeaders() {
 			wp_register_style('FsChartsBackend', '/wp-content/plugins/fscharts/res/css/be.css');
@@ -346,6 +376,34 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			wp_enqueue_script("jquery");
 			wp_enqueue_script('FsChartsBEeffects');
 		}
+
+
+    /**
+		 * Get an int plugin option
+		 *
+		 * @param 	string  $opt: The option
+     * @param   int   $default: The default return
+		 * @return 	int
+		 * @access 	protected
+     * @since   1.1.0
+		 */
+    protected function getPiVarInt($opt, $default = 0) {
+      return (int)get_option('fscharts_'.$opt, $default);
+    }
+
+
+     /**
+		 * Get a plugin option
+		 *
+		 * @param 	string  $opt: The option
+     * @param   mixed   $default: The default return
+		 * @return 	string
+		 * @access 	protected
+     * @since   1.1.0
+		 */
+    protected function getPiVar($opt, $default = null) {
+      return get_option('fschart_'.$opt, $default);
+    }
 		
 	}
 }

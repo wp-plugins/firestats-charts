@@ -28,21 +28,37 @@ Take a look on the changelog for the incomming features
 
 == Changelog ==
 
-= Roadmap 1.1.0 =
-* l18n
-* l10n
-* Widget configuration
-* Visits on chart too
-
 = 1.1.0 =
 * Moved the widget install method inside the class plugin [FsCharts->installWidget()]
 * Fixed plugin install method [FsCharts->install()]
 * Added widget configuration panel
 * Added fscharts/res/css/be.css for styling the BE widget
 * Config panel AJAX animation (No-JS compliant)
+* Updated css/be.css
+* Updated scripts/beeffect.js
+* Added check of FireStats Installation
 
 = 1.0.0 =
 * First version
 * Simply display a chart on the dashboard with the hits of the last month
 More feature in the next, comming soon, versions
+
+= Roadmap 1.1.0 =
+* l18n
+* l10n
+* Widget configuration
+
+= Roadmap 1.2.0 =
+* Bar chart
+* Pie chart
+
+= Roadmap 1.3.0 =
+* 24h hits
+* 24h unique hits
+* 24h visits
+* 24h unique visits
+
+= Roadmap 1.4.0 =
+* Wigdet tabs layout
+* Browsers & OS tab
 

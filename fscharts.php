@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.0.0
+Version: 1.0.1
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */

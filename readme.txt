@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: mArm
-Tags: firestats, statistics, charts, graph
+Tags: firestats, statistics, charts, graph, stats, admin, widget
 Requires at least: 2.9.0
-Tested up to: 2.9.1
-Stable tag: 1.0.0
+Tested up to: 2.9.2
+Stable tag: 1.0.1
 
 
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard

@@ -1,4 +1,4 @@
-=== Plugin Name ===
+=== FireStats Charts ===
 Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0

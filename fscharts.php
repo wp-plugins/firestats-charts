@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.1.0
+Version: 1.0.4
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -40,23 +40,12 @@ if (stripos('wp-admin', $_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']) !== f
 }
 
 
-// *************************************
-// Check if FireStats is installed
-// *************************************
-
-$fsInstalled = true;
-if (!function_exists('fs_initialize_fs_callbacks')) {
-  echo 'FireStats Charts require <strong>FireStats >= 1.6.3</strong>';
-  $fsInstalled = false;
-}
-
-
 /**********************************************
  *
  *           Plugin's Class 
  *
  */
-if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
+if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 
 	// *************************************
 	// Class declaration
@@ -70,7 +59,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
 		// Plugin's key
 		protected $piKey = 'wp-fscharts-pi';
     // Plugin's version
-    protected $version = '1.1.0';
+    protected $version = '1.0.4';
 		
 		
 		
@@ -112,26 +101,22 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
       // Include jpgraph library
       require_once('res/jpgraph/jpgraph.php');
 			require_once('res/jpgraph/jpgraph_line.php');
-		
-			$this->additionnalHeaders();
-		
-		}
 
+		}
 		
 		/**
-		 * Install the plugin
+		 * Install le plugin
 		 *
 		 * @param 	void
 		 * @return 	void
 		 * @access 	public
-     * @since   1.1.0
 		 */
 		public function install() {
 			
 			// For 1.1.0
 			
       // Check if pi is installed
-			$installed = $this->getPiVar('fscharts_version', null);
+			$installed = get_option('fscharts_version', null);
 			
 			// If not installed, add install it
 			if ($installed === null) {
@@ -150,61 +135,77 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
         add_option('fscharts_zoom_height', 600);
         add_option('fscharts_zoom_width', 800);
 
-        // Version number...
-        add_option('fscharts_version', $this->version);
+        $installed = '1.0.0';
+
       }
 
-      // Make version changes updates
-      // (none)
-
+      // Updates between versions
+      //
+      // if (version_compare($installed, '1.2.0', '<')) {
+      //  add_option('use_extJS', 0);
+      //  $installed = '1.2.0';
+      // }
+			
+			// Update version number
+			if ($installed === null) {
+				add_option('fscharts_version', $this->version);
+			} else {
+				update_option('fscharts_version', $this->version);
+			}
 			
 		}
-
-
-    /**
+		
+		/**
 		 * Install the widget on the dashboard
 		 *
 		 * @param 	void
 		 * @return 	void
 		 * @access 	public
-     * @since   1.1.0
+     * @since   1.0.3
 		 */
     public function installWidget() {
 
-      global $wpdb;
-
-      // Get datas from firestats table
-      //$graph = new Graph(650, 380);
-			$graph = new Graph((int)get_option('fscharts_width'), (int)get_option('fscharts_height'));
-      $graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
-      $graph->SetMargin(40,30,40,100);
-      $graph->title->Set(__('FireStats Charts (last 30 days)'));
-      $graph->xaxis->SetLabelAngle(90);
-      $graph->xaxis->title->Set('Days');
-      $graph->yaxis->title->Set('Hits');
-
-      // Create the linear plot
-      $hits = $this->getHits();
-      $lineplot = new LinePlot($hits['datas']);
-      $graph->xaxis->SetTickLabels($hits['labels']);
-
-      $lineplot->SetFillColor('orange@0.5');
-      $lineplot->value->Show();
-      $lineplot->value->SetColor('darkred');
-      //$lineplot->value->SetFont('', '', 8);
-      $lineplot->value->SetFormat('%d');
-
-      // Add the plot to the graph
-      $graph->Add($lineplot);
-
-
-      $graph->Stroke(dirname(__FILE__).'/out/graph.png');
-
-      $out = $this->getConfigPanelHTML();
-      echo $out;
+			global $wpdb;
+			global $fscPi;
+		
+			// Check if FireStats is installed
+			if (!defined('FS_WORDPRESS_PLUGIN_VER')) {
+				echo '<p>FireStats Charts require <strong>FireStats >= 1.6.3</p>';
+			} else {
+				// Get datas from firestats table
+				$graph = new Graph(650, 380);
+				$graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
+				$graph->SetMargin(40,30,40,100);
+				$graph->title->Set('FireStats Charts '.$this->version);
+				$graph->xaxis->SetLabelAngle(90);
+				$graph->xaxis->title->Set('Days');
+				$graph->yaxis->title->Set('Hits');
+			
+				// Create the linear plot
+				$hits = $fscPi->getHits();
+				$lineplot = new LinePlot($hits['datas']);
+				$graph->xaxis->SetTickLabels($hits['labels']);
+				
+				$lineplot->SetFillColor('orange@0.5');
+				$lineplot->value->Show();
+				$lineplot->value->SetColor('darkred');
+				//$lineplot->value->SetFont('', '', 8);
+				$lineplot->value->SetFormat('%d');
+			
+				// Add the plot to the graph
+				$graph->Add($lineplot);
+				
+				// Delete too old temp files (add 1.0.2)
+				$this->cleanTempDirectory();
+				
+				// Graph key for temp file (add 1.0.2)
+				$graphKey = 'graph_'.md5(time());
+				$graph->Stroke(dirname(__FILE__).'/out/'.$graphKey.'.png');
+			
+				echo '<div style="text-align: center;"><img src="/wp-content/plugins/firestats-charts/out/'.$graphKey.'.png" alt="FireStats Graph" /></div>';
+			}
 
     }
-		
 		
 		
 		/**********************************************
@@ -227,7 +228,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
 			$ydata = array();
   		$days = array();
 			
-      $req = 'SELECT timestamp,count(*) AS toto FROM '.$wpdb->prefix.'firestats_hits GROUP BY SUBSTRING(timestamp,1,10)';
+      $req = 'SELECT *,count(*) AS toto FROM '.$wpdb->prefix.'firestats_hits GROUP BY SUBSTRING(timestamp,1,10)';
       $visites = $wpdb->get_results($req);
       foreach ($visites as $visite) {
         $ydata[] = $visite->toto;
@@ -241,172 +242,113 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled && $fsInstalled) {
 		
 		
 		
-		
-		
+	
+	
+	
+	
 		
 		/**********************************************
 		 *
-		 *          RENDERING PART
+		 *          ADMIN PART
 		 *
-		 */
-
-
-    /**
-		 * Create the HTML for the left panel
+		 */	
+		
+		
+		/**
+		 * Ajoute le menu d'admin du plugin
 		 *
-		 * @param 	void
+		 * @param	void
 		 * @return 	void
 		 * @access 	public
-     * @since   1.1.0
 		 */
-    protected function getConfigPanelHTML() {
-
-      // Open the box
-      $out = '<div style="text-align: center;">';
-
-      // Configuration panel rendering
-      $out .= '<div id="widgetConfigPanel">';
-			$out .= '<form method="post" action="'.get_option('home').'/wp-admin/" name="fschartsPanelForm" id="fschartsPanelForm">';
-			$out .= '<input type="hidden" name="'.$this->piKey.'[submitted]" id="fscSubmitted" value="1" />';
-			$out .= '<input type="hidden" name="'.$this->piKey.'[task]" id="fscTask" value="config" />';
-
-      $out .= '<div id="widgetLeftPanel">';
-      $out .= $this->getLeftPanelHTML();
-      $out .= '</div>';
-
-      $out .= '<div id="widgetRightPanel">';
-      $out .= $this->getRightPanelHTML();
-      $out .= '</div>';
-
-			$out .= '<div class="spacer"></div>';
-      $out .= '</div>';
-
-      $out .= '<div id="widgetConfigShowButton" class="hideMe fsUp"></div>';
-
-      // The chart
-      $out .= '<img src="http://www.ansermot.ch/wp-content/plugins/fscharts/out/graph.png" alt="FireStats Graph" />';
-
-      // Close the box...
-      $out .=' </div>';
-
-      return $out;
-      
-    }
-
-
-		/**
-		 * Create the HTML for the left panel
-		 *
-		 * @param 	void
-		 * @return 	void
-		 * @access 	protected
-		 */
-		protected function getLeftPanelHTML() {
+		public function adminMenu() {
 		
-			$out = '<ul>';
-			$out .= '<li><label for="'.$this->piKey.'-width">'.__('Width').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[width]" id="'.$this->piKey.'-width" value="'.$this->getPiVarInt('width').'" class="inputText" /></li>';
-			$out .= '<li><label for="'.$this->piKey.'-height">'.__('Height').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[height]" id="'.$this->piKey.'-height" value="'.$this->getPiVarInt('height').'" class="inputText" /></li>';
-      
-			$checked = ($this->getPiVarInt('table') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Display stats table').' :</label>';
-			$out .= '<input type="checkbox" name="'.$this->pikey.'[table]" id="'.$this->piKey.'-table" '.$checked.'/></li>';
-      
-			$checked = ($this->getPiVarInt('hits') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-hits">'.__('Display hits').' :</label>';
-			$out .= '<input type="checkbox" name="'.$this->pikey.'[hits]" id="'.$this->piKey.'-hits" '.$checked.'/></li>';
+			// In 1.1.0
 			
-			$checked = ($this->getPiVarInt('visited') == 1) ? 'checked="checked" ' : '';
-      $out .= '<li><label for="'.$this->piKey.'-visits">'.__('Display visits').' :</label>';
-			$out .= '<input type="checkbox" name="'.$this->pikey.'[visits]" id="'.$this->piKey.'-visits" '.$checked.'/></li>';
-			$out .= '</ul>';
+			//add_options_page('Firestats Charts', 'Firestats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
 			
-			return $out;
-			
+			// Inscrit les JS supplémentaires
+			//wp_register_script('JQuery', get_option('home').'/wp-includes/js/jquery/jquery.js');
+			//wp_enqueue_script('JQuery');
+
+		}
+		
+		
+		/**
+		 * Affiche la page des options
+		 *
+		 * @param	void
+		 * @return 	void
+		 * @access 	public
+		 */
+		public function adminMenuOptionPage() {
+			// In 1.1.0
 		}
 		
 		
 		
-		/**
-		 * Create the HTML for the right panel
-		 *
-		 * @param 	void
-		 * @return 	void
-		 * @access 	protected
-		 */
-		protected function getRightPanelHTML() {
 		
-			$out = '<ul>';
-			$out .= '<li><label for="'.$this->piKey.'-zoom-width">'.__('Zoom width').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[zoom_width]" id="'.$this->piKey.'-zoom-width" value="'.$this->getPiVarInt('zoom_width').'" class="inputText" /></li>';
-			$out .= '<li><label for="'.$this->piKey.'-zoom-height">'.__('Zoom height').' :</label>';
-			$out .= '<input type="text" name="'.$this->pikey.'[zoom-height]" id="'.$this->piKey.'-zoom-height" value="'.$this->getPiVarInt('zoom_height').'" class="inputText" /></li>';
-      
-			$checked = ($this->getPiVarInt('zoom') == 1) ? 'checked="checked" ' : '';
-			$out .= '<li><label for="'.$this->piKey.'-table">'.__('Enable zoom').' :</label>';
-			$out .= '<input type="checkbox" name="'.$this->pikey.'[zoom]" id="'.$this->piKey.'-zoom" '.$checked.'/></li>';
-			
-			$out .= '<li><input type="submit" name="'.$this->piKey.'[submit] id="'.$this->piKey.'-submit" value="'.__('Apply').'" class="inputButton" /></li>';
-      
-			$out .= '</ul>';
-			
-			return $out;
-			
-		}
 		
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		/**********************************************
 		 *
-		 *          PROTECTED METHODS PART
+		 *          MISC PART
 		 *
-		 */
+		 */	
+		
 		
 		/**
-		 * Add Pi headers to WP <head>
+		 * Clean up temp directory
 		 *
-		 * @param 	void
-		 * @return 	void
-		 * @access 	protected
+		 * @param 	int		$lifetime: La durée de vie d'un fichier 
+		 * @return 	bool
+		 * @access 	public
+		 * @since		1.0.2
 		 */
-		protected function additionnalHeaders() {
-			wp_register_style('FsChartsBackend', '/wp-content/plugins/fscharts/res/css/be.css');
-			wp_register_script('FsChartsBEeffects', '/wp-content/plugins/fscharts/res/scripts/beeffects.js');
+		protected function cleanTempDirectory() {
 			
-			wp_enqueue_style('FsChartsBackend');
-			wp_enqueue_script("jquery");
-			wp_enqueue_script('FsChartsBEeffects');
+			$directory = dirname(__FILE__).'/out/';
+			
+			// If must make dir, return true
+			if (!is_dir($directory)) {
+				mkdir($directory);
+				return true;
+			}
+			
+			// Open directory
+			if (!$dirHandler = opendir($directory)) {
+				return false;
+			}
+			
+			// List files
+			while ($file = readdir($dirHandler)) {
+			
+				if ($file != '.' &&  $file != '..' && !is_dir($directory.'/'.$file) && (substr($file, -4) == '.png')) {
+					
+					// Modification date
+					$filetime = filemtime($directory.'/'.$file);
+					
+					// Delete if too old ( > 1h00)
+					if (time() - $filetime > 3600) {
+						unlink($directory.'/'.$file);
+					}
+				}
+			}
 		}
-
-
-    /**
-		 * Get an int plugin option
-		 *
-		 * @param 	string  $opt: The option
-     * @param   int   $default: The default return
-		 * @return 	int
-		 * @access 	protected
-     * @since   1.1.0
-		 */
-    protected function getPiVarInt($opt, $default = 0) {
-      return (int)get_option('fscharts_'.$opt, $default);
-    }
-
-
-     /**
-		 * Get a plugin option
-		 *
-		 * @param 	string  $opt: The option
-     * @param   mixed   $default: The default return
-		 * @return 	string
-		 * @access 	protected
-     * @since   1.1.0
-		 */
-    protected function getPiVar($opt, $default = null) {
-      return get_option('fschart_'.$opt, $default);
-    }
-		
 	}
 }
+
 
 
 
@@ -454,33 +396,35 @@ if (class_exists('FsCharts') && !isset($fscPi) && !isset($GLOBALS['fscPi'])) {
 
 
 
+
+
+
+
 /**********************************************
  *
  *          Hooks management
  *
  */
  
+ 
 if (isset($fscPi)) {
 
+	// Add the widget installation
   add_action('wp_dashboard_setup', 'fsc_install_widget');
 	
-	// Add the admin menu entry
-	//add_action('admin_menu', array(&$fscPi, 'adminMenu'));
-	// Register activation hook function
+	// Register activation function
 	register_activation_hook(__FILE__, array(&$fscPi, 'install'));
 	
 	/**
 	 * Add the widget to the dashboard
 	 *
-	 * @param	void
+	 * @param		void
 	 * @return 	void
 	 * @access 	public
 	 */
   function fsc_install_widget() {
-		wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_installWidget');
+    wp_add_dashboard_widget('fsc_dashboard_widget', 'FireStats Charts', 'fsc_installWidget');
   }
-	
-	
 	
 }
 
@@ -490,6 +434,7 @@ if (isset($fscPi)) {
  * @param	void
  * @return 	void
  * @access 	public
+ * @since		1.0.3
  */
 function fsc_installWidget() {
 	global $fscPi;
@@ -506,11 +451,34 @@ function fsc_installWidget() {
 
 
 
+
+
+
+
+
+
+
+
+
 /**********************************************
  *
  *          Template Tags
  *
  */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,10 +9,10 @@ Stable tag: 1.0.4
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
 
 == Description ==
-This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
-
-<strong>Require FireStats >= 1.6.3</strong><br />
-<strong>Not tested on WPMU</strong>
+<p>This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard</p>
+<p><em>Sorry for my forgots the between updates 1.0.2 => 1.0.4</em></p>
+<p><strong>Require FireStats >= 1.6.3</strong><br />
+<strong>Not tested on WPMU</strong></p>
 
 == Installation ==
 1. Upload the folder `fscharts` to the `/wp-content/plugins/` directory
@@ -28,6 +28,18 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 1. The widget on the dashboard (version 1.0.0)
 
 == Changelog ==
+
+= 1.0.4 =
+* Fixed absolute hardcoded image link always pointing on ansermot.ch (thanks Alexander)
+* Fixed chart image title
+* Cleaned some code
+* Fixed plugin's folder name in image path
+
+= 1.0.3 =
+* Updated version number in class
+* Added temp file cleaning (should be in 1.0.2 but forgot to add the call to it)
+* Moved rendering function inside the class
+* Removed template tag
 
 = 1.0.2 =
 * Removed static graph image

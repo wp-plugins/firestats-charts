@@ -29,6 +29,14 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 
 == Changelog ==
 
+= 1.1.0 =
+* Added a plugin helper (inc/class.helper.php)
+* Added setting page
+* Added settings : chart width, chart height
+* Added file res/styles/be-override.css
+* Fixed some bugs
+* Renamed plugin's main file to firestats-charts.php
+
 = 1.0.4 =
 * Fixed absolute hardcoded image link always pointing on ansermot.ch (thanks Alexander)
 * Fixed chart image title

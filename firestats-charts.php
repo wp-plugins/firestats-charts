@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.0.4
+Version: 1.1.0-unstable
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -37,6 +37,9 @@ if (version_compare(phpversion(), '5.1', '<'))	die ('This plugin requires PHP 5.
 $fsChartsDisabled = false;
 if (stripos('wp-admin', $_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']) !== false) {
 	$fsChartsDisabled = true;
+	
+	// Start plugin execution context
+	define('_FSC', true);
 }
 
 
@@ -59,7 +62,11 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		// Plugin's key
 		protected $piKey = 'wp-fscharts-pi';
     // Plugin's version
-    protected $version = '1.0.4';
+    protected $version = '1.1.0';
+		// Plugin's helper
+		protected	$helper = null;
+		// Plugin's absolute url
+		protected $absUrl = '';
 		
 		
 		
@@ -73,6 +80,8 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 */
 	 
 		public function __construct($verbose = null) {
+
+			$this->absUrl = get_option('home').'/wp-content/plugins/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));
 
 			// Detect verbose mode
 			if ($verbose !== null && is_bool($verbose)) {
@@ -105,15 +114,13 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		}
 		
 		/**
-		 * Install le plugin
+		 * Plugin installation
 		 *
 		 * @param 	void
 		 * @return 	void
 		 * @access 	public
 		 */
 		public function install() {
-			
-			// For 1.1.0
 			
       // Check if pi is installed
 			$installed = get_option('fscharts_version', null);
@@ -208,6 +215,23 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
     }
 		
 		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		/**********************************************
 		 *
 		 *          DATAS PART
@@ -246,6 +270,19 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 	
 	
 	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 		
 		/**********************************************
 		 *
@@ -255,17 +292,19 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		
 		
 		/**
-		 * Ajoute le menu d'admin du plugin
+		 * Add the admin menu entry for the plugin
 		 *
-		 * @param	void
+		 * @param		void
 		 * @return 	void
-		 * @access 	public
+		 * @access 	protected
+		 * @since		1.1.0
 		 */
-		public function adminMenu() {
+		protected function adminMenu() {
 		
-			// In 1.1.0
+			add_options_page('FireStats Charts', 'FireStats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
 			
-			//add_options_page('Firestats Charts', 'Firestats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
+			// Register additionnal css and scripts
+			wp_register_style('fsc_be_override', wepLib::getPiUrl().'css/be-override.css');
 			
 			// Inscrit les JS supplémentaires
 			//wp_register_script('JQuery', get_option('home').'/wp-includes/js/jquery/jquery.js');
@@ -275,20 +314,22 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		
 		
 		/**
-		 * Affiche la page des options
+		 * Option page dispatch function
 		 *
-		 * @param	void
+		 * @param		void
 		 * @return 	void
-		 * @access 	public
+		 * @access 	protected
+		 * @since		1.1.0
 		 */
-		public function adminMenuOptionPage() {
-			// In 1.1.0
+		protected function adminMenuOptionPage() {
+			
 		}
 		
 		
 		
 		
 		
+	
 	
 	
 	
@@ -411,6 +452,9 @@ if (isset($fscPi)) {
 
 	// Add the widget installation
   add_action('wp_dashboard_setup', 'fsc_install_widget');
+	
+	// Add admin menu entry for the plugin
+	add_action('admin_menu', array(&$wep2, 'adminMenu'));
 	
 	// Register activation function
 	register_activation_hook(__FILE__, array(&$fscPi, 'install'));

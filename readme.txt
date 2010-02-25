@@ -36,6 +36,8 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 * Added file res/styles/be-override.css
 * Fixed some bugs
 * Renamed plugin's main file to firestats-charts.php
+* Added absUrl
+* Removed flags *.dat files from jpGraph
 
 = 1.0.4 =
 * Fixed absolute hardcoded image link always pointing on ansermot.ch (thanks Alexander)

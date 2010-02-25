@@ -67,6 +67,8 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		protected	$helper = null;
 		// Plugin's absolute url
 		protected $absUrl = '';
+		// Plugin's internal html output buffer
+		protected $htmlBuffer = '';
 		
 		
 		
@@ -209,7 +211,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 				$graphKey = 'graph_'.md5(time());
 				$graph->Stroke(dirname(__FILE__).'/out/'.$graphKey.'.png');
 			
-				echo '<div style="text-align: center;"><img src="/wp-content/plugins/firestats-charts/out/'.$graphKey.'.png" alt="FireStats Graph" /></div>';
+				echo '<div style="text-align: center;"><img src="'.$this->absUrl.'out/'.$graphKey.'.png" alt="FireStats Graph" /></div>';
 			}
 
     }
@@ -299,12 +301,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @access 	protected
 		 * @since		1.1.0
 		 */
-		protected function adminMenu() {
+		public function adminMenu() {
 		
 			add_options_page('FireStats Charts', 'FireStats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
 			
 			// Register additionnal css and scripts
-			wp_register_style('fsc_be_override', wepLib::getPiUrl().'css/be-override.css');
+			wp_register_style('fsc_be_override', $this->absUrl.'css/be-override.css');
 			
 			// Inscrit les JS supplémentaires
 			//wp_register_script('JQuery', get_option('home').'/wp-includes/js/jquery/jquery.js');
@@ -321,8 +323,29 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @access 	protected
 		 * @since		1.1.0
 		 */
-		protected function adminMenuOptionPage() {
-			
+		public function adminMenuOptionPage() {
+				
+				// @todo : detect task
+				$task = 'settings';
+				$html = '';
+				
+				if ($task == 'settings') {
+					
+					$this->htmlBuffer .= '<div class="wrap">
+																<div id="icon-options-general" class="icon32"><br>
+																</div>
+																<h2>FireStats Charts '.$this->version.' - Settings</h2>';
+					
+					$this->htmlBuffer .= '<p class="submit">
+																	<input name="Submit" class="button-primary" value="Update settings" type="submit">
+																</p>';
+					
+					$this->htmlBuffer .= '</div>';
+					
+				}
+				
+				echo $this->htmlBuffer;
+				
 		}
 		
 		
@@ -454,7 +477,7 @@ if (isset($fscPi)) {
   add_action('wp_dashboard_setup', 'fsc_install_widget');
 	
 	// Add admin menu entry for the plugin
-	add_action('admin_menu', array(&$wep2, 'adminMenu'));
+	add_action('admin_menu', array(&$fscPi, 'adminMenu'));
 	
 	// Register activation function
 	register_activation_hook(__FILE__, array(&$fscPi, 'install'));

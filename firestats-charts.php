@@ -336,6 +336,25 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 																</div>
 																<h2>FireStats Charts '.$this->version.' - Settings</h2>';
 					
+					$this->htmlBuffer .= '<table class="form-table">
+																<tbody>
+																	<tr valign="top">
+																		<th scope="row"></th>
+																		<td><fieldset>
+																			<legend class="screen-reader-text"><span>Chart</span></legend>
+																			<p>
+																				<input id="'.$this->piKey.'[width]" type="text" name="'.$this->piKey.'_width" value="'.get_option('fscharts_width').'" />
+																				<label for="'.$this->piKey.'_width">Width</label>
+																			</p>
+																			<p>
+																				<input id="'.$this->piKey.'[height]" type="text" name="'.$this->piKey.'_height" value="'.get_option('fscharts_height').'" />
+																				<label for="'.$this->piKey.'_height">Height</label>
+																			</p>
+																			</fieldset></td>
+																	</tr>
+																</tbody>
+															</table>';
+					
 					$this->htmlBuffer .= '<p class="submit">
 																	<input name="Submit" class="button-primary" value="Update settings" type="submit">
 																</p>';

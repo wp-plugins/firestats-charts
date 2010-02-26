@@ -18,7 +18,7 @@
 /**
  * $Id$
  * @package	FireStats-Charts
- * @file		class.helper.php
+ * @file		class.renderer.php
  * @since		1.1.0
  */
 
@@ -34,14 +34,15 @@ if (defined('_FSC')) {
 	final class FsChartsHelper {
 		
 		/**
-		 * Get a variable (POST, GET, COOKIE)
+		 * Build the settings page's html
 		 *
 		 * @param 	void
-		 * @return 	void
+		 * @return 	string	The html
 		 * @access 	public
 		 */
-		public static function getVar($var, $default = null, $offset = 'ALL') {
-			
+		public function settingsPageHTML() {
+		
+
 		}
 		
 	}

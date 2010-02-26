@@ -67,9 +67,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		protected	$helper = null;
 		// Plugin's absolute url
 		protected $absUrl = '';
+		// Plugin's absolute path
+		protected $absPath = '';
 		// Plugin's internal html output buffer
 		protected $htmlBuffer = '';
-		
+		// Plugin's html render engine
+		protected $render = null;
 		
 		
 		
@@ -84,6 +87,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		public function __construct($verbose = null) {
 
 			$this->absUrl = get_option('home').'/wp-content/plugins/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));
+			$this->absPath = dirname(__FILE__).'/';
 
 			// Detect verbose mode
 			if ($verbose !== null && is_bool($verbose)) {
@@ -109,9 +113,13 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 				}
 			}
       
+			// Include plugin's additional files
+			require_once($this->absPath.'inc/class.helper.php');
+			require_once($this->absPath.'inc/class.renderer.php');
+			
       // Include jpgraph library
-      require_once('res/jpgraph/jpgraph.php');
-			require_once('res/jpgraph/jpgraph_line.php');
+      require_once($this->absPath.'res/jpgraph/jpgraph.php');
+			require_once($this->absPath.'res/jpgraph/jpgraph_line.php');
 
 		}
 		

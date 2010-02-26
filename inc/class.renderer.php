@@ -31,7 +31,22 @@ if (defined('_FSC')) {
 	// *************************************
 	// Class declaration
 	// *************************************
-	final class FsChartsHelper {
+	class FsChartsRenderer {
+		
+		// Plugin's reference
+		protected $piRef = null;
+		
+		/**
+		 * Constructor
+		 *
+		 * @param 	obj		&$piRef: Parent plugin reference
+		 * @return 	void
+		 * @access 	public
+		 */
+		public function __construct(&$piRef) {
+			$this->piRef = $piRef;
+		}
+		
 		
 		/**
 		 * Build the settings page's html
@@ -40,9 +55,43 @@ if (defined('_FSC')) {
 		 * @return 	string	The html
 		 * @access 	public
 		 */
-		public function settingsPageHTML() {
+		public function settingsPageHTML($options) {
 		
-
+			$out = '<div class="wrap">
+								<div id="icon-options-general" class="icon32"><br>
+								</div>
+								<h2>FireStats Charts '.$this->version.' - Settings</h2>
+								<form method="post" action="'.$this->piRef->getAdminUrl().'"> 
+									<input type="hidden" id="'.$this->piRef->getPiKey().'_submitted" name="'.$this->piRef->getPiKey().'[submitted]" value="1" />
+									<input type="hidden" id="'.$this->piRef->getPiKey().'_task" name="'.$this->piRef->getPiKey().'[task]" value="settings" />
+									<input type="hidden" id="'.$this->piRef->getPiKey().'_action" name="'.$this->piRef->getPiKey().'[action]" value="update" />';
+					
+			$out .='<table class="form-table">
+								<tbody>
+									<tr valign="top">
+										<th scope="row"></th>
+										<td><fieldset>
+											<legend class="screen-reader-text"><span>Chart</span></legend>
+											<p>
+												<input id="'.$this->piRef->getPiKey().'[width]" type="text" name="'.$this->piRef->getPiKey().'_width" value="'.$options['width'].'" />
+												<label for="'.$this->piRef->getPiKey().'_width">Width</label>
+											</p>
+											<p>
+												<input id="'.$this->piRef->getPiKey.'[height]" type="text" name="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
+												<label for="'.$this->piRef->getPiKey.'_height">Height</label>
+											</p>
+											</fieldset></td>
+									</tr>
+								</tbody>
+							</table>';
+					
+				$out .= '<p class="submit">
+									<input name="Submit" class="button-primary" value="Update settings" type="submit">
+								</p></form>';
+				
+				$out .= '</div>';
+				
+				return $out;
 		}
 		
 	}

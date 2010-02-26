@@ -37,11 +37,9 @@ if (version_compare(phpversion(), '5.1', '<'))	die ('This plugin requires PHP 5.
 $fsChartsDisabled = false;
 if (stripos('wp-admin', $_SERVER['HTTP_HOST'].'/'.$_SERVER['REQUEST_URI']) !== false) {
 	$fsChartsDisabled = true;
-	
-	// Start plugin execution context
-	define('_FSC', true);
 }
-
+// Start plugin execution context
+define('_FSC', true);
 
 /**********************************************
  *
@@ -69,10 +67,23 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		protected $absUrl = '';
 		// Plugin's absolute path
 		protected $absPath = '';
+		// Plugin's admin page url
+		protected $adminUrl = '';
 		// Plugin's internal html output buffer
 		protected $htmlBuffer = '';
 		// Plugin's html render engine
 		protected $render = null;
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
@@ -84,10 +95,19 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 *
 		 */
 	 
+	 
+	 	/**
+		 * Constructor
+		 *
+		 * @param 	bool	$verbose: Active debug if true
+		 * @return 	void
+		 * @access 	public
+		 */
 		public function __construct($verbose = null) {
 
 			$this->absUrl = get_option('home').'/wp-content/plugins/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));
 			$this->absPath = dirname(__FILE__).'/';
+			$this->adminUrl = get_option('home').'/wp-admin/options-general.php?page='.str_replace(basename(__FILE__),"",plugin_basename(__FILE__)).basename(__FILE__);
 
 			// Detect verbose mode
 			if ($verbose !== null && is_bool($verbose)) {
@@ -116,6 +136,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			// Include plugin's additional files
 			require_once($this->absPath.'inc/class.helper.php');
 			require_once($this->absPath.'inc/class.renderer.php');
+			$this->render = new FsChartsRenderer($this);
 			
       // Include jpgraph library
       require_once($this->absPath.'res/jpgraph/jpgraph.php');
@@ -155,7 +176,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
         $installed = '1.0.0';
 
       }
-
+ 
       // Updates between versions
       //
       // if (version_compare($installed, '1.2.0', '<')) {
@@ -334,44 +355,37 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		public function adminMenuOptionPage() {
 				
 				// @todo : detect task
-				$task = 'settings';
+				if (!isset($this->vars['task'])) $this->vars['task'] = 'settings';
+				$task = $this->vars['task'];
+	
 				$html = '';
 				
 				if ($task == 'settings') {
 					
-					$this->htmlBuffer .= '<div class="wrap">
-																<div id="icon-options-general" class="icon32"><br>
-																</div>
-																<h2>FireStats Charts '.$this->version.' - Settings</h2>';
+					if ($this->vars['submitted'] == 1) {
+						
+						if (isset($this->vars->width)) {
+							update_option('fscharts_width', $this->vars->width);
+						}
+						
+						if (isset($this->vars->height)) {
+							update_option('fscharts_width', $this->vars->height);
+						}
+						
+					}
 					
-					$this->htmlBuffer .= '<table class="form-table">
-																<tbody>
-																	<tr valign="top">
-																		<th scope="row"></th>
-																		<td><fieldset>
-																			<legend class="screen-reader-text"><span>Chart</span></legend>
-																			<p>
-																				<input id="'.$this->piKey.'[width]" type="text" name="'.$this->piKey.'_width" value="'.get_option('fscharts_width').'" />
-																				<label for="'.$this->piKey.'_width">Width</label>
-																			</p>
-																			<p>
-																				<input id="'.$this->piKey.'[height]" type="text" name="'.$this->piKey.'_height" value="'.get_option('fscharts_height').'" />
-																				<label for="'.$this->piKey.'_height">Height</label>
-																			</p>
-																			</fieldset></td>
-																	</tr>
-																</tbody>
-															</table>';
+					// Display parameters
+					$params = array(
+						'width' => get_option('fscharts_width'),
+						'height' => get_option('fscharts_height'),
+					);
 					
-					$this->htmlBuffer .= '<p class="submit">
-																	<input name="Submit" class="button-primary" value="Update settings" type="submit">
-																</p>';
-					
-					$this->htmlBuffer .= '</div>';
+					// Build the html
+					$html = $this->render->settingsPageHTML($params);
 					
 				}
 				
-				echo $this->htmlBuffer;
+				echo $html;
 				
 		}
 		
@@ -397,6 +411,71 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 *          MISC PART
 		 *
 		 */	
+		
+		
+		/**
+		 * Return the plugin's version
+		 *
+		 * @param 	void
+		 * @return 	string
+		 * @access 	public
+		 * @since		1.1.0
+		 */
+		public function getVersion() {
+			return $this->version;
+		}
+		
+		
+		/**
+		 * Return the plugin's key
+		 *
+		 * @param 	void
+		 * @return 	string
+		 * @access 	public
+		 * @since		1.1.0
+		 */
+		public function getPiKey() {
+			return $this->piKey;
+		}
+		
+		
+		/**
+		 * Return the plugin's folder absolute path
+		 *
+		 * @param 	void
+		 * @return 	string
+		 * @access 	public
+		 * @since		1.1.0
+		 */
+		public function getAbsPath() {
+			return $this->absPath;
+		}
+		
+		
+		/**
+		 * Return the plugin's folder absolute url
+		 *
+		 * @param 	void
+		 * @return 	string
+		 * @access 	public
+		 * @since		1.1.0
+		 */
+		public function getAbsUrl() {
+			return $this->absUrl;
+		}
+		
+		
+		/**
+		 * Return the plugin's admin page url
+		 *
+		 * @param 	void
+		 * @return 	string
+		 * @access 	public
+		 * @since		1.1.0
+		 */
+		public function getAdminUrl() {
+			return $this->adminUrl;
+		}
 		
 		
 		/**

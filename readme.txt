@@ -25,7 +25,8 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 
 == Screenshots ==
 
-1. The widget on the dashboard (version 1.0.0)
+1. The widget on the dashboard (1.1.0)
+2. The setting page (1.1.0)
 
 == Changelog ==
 
@@ -39,6 +40,7 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 * Renamed plugin's main file to firestats-charts.php
 * Added absUrl
 * Removed flags *.dat files from jpGraph
+* Updated screenshots
 
 = 1.0.4 =
 * Fixed absolute hardcoded image link always pointing on ansermot.ch (thanks Alexander)

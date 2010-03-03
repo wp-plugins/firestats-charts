@@ -73,11 +73,11 @@ if (defined('_FSC')) {
 										<td><fieldset>
 											<legend class="screen-reader-text"><span>Chart</span></legend>
 											<p>
-												<input id="'.$this->piRef->getPiKey().'[width]" type="text" name="'.$this->piRef->getPiKey().'_width" value="'.$options['width'].'" />
+												<input name="'.$this->piRef->getPiKey().'[width]" type="text" id="'.$this->piRef->getPiKey().'_width" value="'.$options['width'].'" />
 												<label for="'.$this->piRef->getPiKey().'_width">Width</label>
 											</p>
 											<p>
-												<input id="'.$this->piRef->getPiKey.'[height]" type="text" name="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
+												<input name="'.$this->piRef->getPiKey.'[height]" type="text" id="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
 												<label for="'.$this->piRef->getPiKey.'_height">Height</label>
 											</p>
 											</fieldset></td>

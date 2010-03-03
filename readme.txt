@@ -3,7 +3,7 @@ Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0
 Tested up to: 2.9.2
-Stable tag: 1.0.4
+Stable tag: 1.1.0
 
 
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
@@ -31,6 +31,7 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 
 = 1.1.0 =
 * Added a plugin helper (inc/class.helper.php)
+* Added a plugin renderer (inc/class.renderer.php)
 * Added setting page
 * Added settings : chart width, chart height
 * Added file res/styles/be-override.css

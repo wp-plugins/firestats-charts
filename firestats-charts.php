@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.1.0-unstable
+Version: 1.1.0
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -211,7 +211,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 				echo '<p>FireStats Charts require <strong>FireStats >= 1.6.3</p>';
 			} else {
 				// Get datas from firestats table
-				$graph = new Graph(650, 380);
+				$graph = new Graph((int)get_option('fscharts_width'), (int)get_option('fscharts_height'));
 				$graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
 				$graph->SetMargin(40,30,40,100);
 				$graph->title->Set('FireStats Charts '.$this->version);
@@ -364,12 +364,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 					
 					if ($this->vars['submitted'] == 1) {
 						
-						if (isset($this->vars->width)) {
-							update_option('fscharts_width', $this->vars->width);
+						if (isset($this->vars['width'])) {
+							update_option('fscharts_width', $this->vars['width']);
 						}
 						
-						if (isset($this->vars->height)) {
-							update_option('fscharts_width', $this->vars->height);
+						if (isset($this->vars['height'])) {
+							update_option('fscharts_width', $this->vars['height']);
 						}
 						
 					}

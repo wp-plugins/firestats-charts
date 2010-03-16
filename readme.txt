@@ -3,7 +3,7 @@ Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0
 Tested up to: 2.9.2
-Stable tag: 1.1.0
+Stable tag: 1.1.1
 
 
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
@@ -32,6 +32,7 @@ It supports i18n</p>
 
 = 1.1.1 =
 * Added internationalisation (i18n) support via gettext
+* Fixed some errors
 
 = 1.1.0 =
 * Added a plugin helper (inc/class.helper.php)

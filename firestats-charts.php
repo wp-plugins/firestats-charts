@@ -107,7 +107,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			
 			// Loads translations
 			$plugin_dir = basename(dirname(__FILE__));
-			load_plugin_textdomain('FireStats Charts', 'wp-content/plugins/'.$plugin_dir, $plugin_dir);
+			load_plugin_textdomain('firestats-charts', 'wp-content/plugins/'.$plugin_dir.'/i18n', $plugin_dir.'/i18n');
 			
 			// URIs and URLs
 			$this->absUrl = get_option('home').'/wp-content/plugins/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));

@@ -9,8 +9,8 @@ Stable tag: 1.1.0
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
 
 == Description ==
-<p>This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard</p>
-<p><em>Sorry for my forgots the between updates 1.0.2 => 1.0.4</em></p>
+<p>This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard.<br />
+It supports localisation.</p>
 <p><strong>Require FireStats >= 1.6.3</strong><br />
 <strong>Not tested on WPMU</strong></p>
 
@@ -29,6 +29,9 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 2. The setting page (1.1.0)
 
 == Changelog ==
+
+= 1.1.1 =
+* Added localisation (l10n) support via gettext
 
 = 1.1.0 =
 * Added a plugin helper (inc/class.helper.php)

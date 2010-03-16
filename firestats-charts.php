@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.1.1-unstable
+Version: 1.1.1
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -104,7 +104,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @access 	public
 		 */
 		public function __construct($verbose = null) {
-
+			
+			// Loads translations
+			$plugin_dir = basename(dirname(__FILE__));
+			load_plugin_textdomain('FireStats Charts', 'wp-content/plugins/'.$plugin_dir, $plugin_dir);
+			
+			// URIs and URLs
 			$this->absUrl = get_option('home').'/wp-content/plugins/'.str_replace(basename( __FILE__),"",plugin_basename(__FILE__));
 			$this->absPath = dirname(__FILE__).'/';
 			$this->adminUrl = get_option('home').'/wp-admin/options-general.php?page='.str_replace(basename(__FILE__),"",plugin_basename(__FILE__)).basename(__FILE__);
@@ -208,16 +213,16 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		
 			// Check if FireStats is installed
 			if (!defined('FS_WORDPRESS_PLUGIN_VER')) {
-				echo '<p>FireStats Charts require <strong>FireStats >= 1.6.3</p>';
+				echo '<p>'.__('FireStats Charts').' '.__('require FireStats >= 1.6.3').'</p>';
 			} else {
 				// Get datas from firestats table
 				$graph = new Graph((int)get_option('fscharts_width'), (int)get_option('fscharts_height'));
 				$graph->SetScale('intint'/*, 0, 0, 0, max($days) - min($days) + 1*/);
 				$graph->SetMargin(40,30,40,100);
-				$graph->title->Set('FireStats Charts '.$this->version);
+				$graph->title->Set(__('FireStats Charts').' '.$this->version);
 				$graph->xaxis->SetLabelAngle(90);
-				$graph->xaxis->title->Set('Days');
-				$graph->yaxis->title->Set('Hits');
+				$graph->xaxis->title->Set(__('Days'));
+				$graph->yaxis->title->Set(__('Count'));
 			
 				// Create the linear plot
 				$hits = $fscPi->getHits();
@@ -240,7 +245,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 				$graphKey = 'graph_'.md5(time());
 				$graph->Stroke(dirname(__FILE__).'/out/'.$graphKey.'.png');
 			
-				echo '<div style="text-align: center;"><img src="'.$this->absUrl.'out/'.$graphKey.'.png" alt="FireStats Graph" /></div>';
+				echo '<div style="text-align: center;"><img src="'.$this->absUrl.'out/'.$graphKey.'.png" alt="'.__('FireStats Graph').'" /></div>';
 			}
 
     }

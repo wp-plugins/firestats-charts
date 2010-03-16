@@ -60,7 +60,7 @@ if (defined('_FSC')) {
 			$out = '<div class="wrap">
 								<div id="icon-options-general" class="icon32"><br>
 								</div>
-								<h2>FireStats Charts '.$this->version.' - Settings</h2>
+								<h2>'.__('FireStats Charts').' '.$this->version.' - '.__('Settings').'</h2>
 								<form method="post" action="'.$this->piRef->getAdminUrl().'"> 
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_submitted" name="'.$this->piRef->getPiKey().'[submitted]" value="1" />
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_task" name="'.$this->piRef->getPiKey().'[task]" value="settings" />
@@ -71,14 +71,14 @@ if (defined('_FSC')) {
 									<tr valign="top">
 										<th scope="row"></th>
 										<td><fieldset>
-											<legend class="screen-reader-text"><span>Chart</span></legend>
+											<legend class="screen-reader-text"><span>'.__('Chart').'</span></legend>
 											<p>
-												<label for="'.$this->piRef->getPiKey().'_width">Width</label>
 												<input name="'.$this->piRef->getPiKey().'[width]" type="text" id="'.$this->piRef->getPiKey().'_width" value="'.$options['width'].'" />
+												<label for="'.$this->piRef->getPiKey().'_width">'.__('Width').'</label>
 											</p>
 											<p>
-												<label for="'.$this->piRef->getPiKey.'_height">Height</label>
 												<input name="'.$this->piRef->getPiKey.'[height]" type="text" id="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
+												<label for="'.$this->piRef->getPiKey.'_height">'.__('Height').'</label>
 											</p>
 											</fieldset></td>
 									</tr>
@@ -86,7 +86,7 @@ if (defined('_FSC')) {
 							</table>';
 					
 				$out .= '<p class="submit">
-									<input name="Submit" class="button-primary" value="Update settings" type="submit">
+									<input name="Submit" class="button-primary" value="'.__('Update settings').'" type="submit">
 								</p></form>';
 				
 				$out .= '</div>';

@@ -2,7 +2,7 @@
 Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0
-Tested up to: 3.0.1
+Tested up to: 3.0.3
 Stable tag: 1.1.2
 
 
@@ -12,7 +12,8 @@ This plugin adds a graphical chart of the FireStats statistics plugin on the adm
 <p>This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard.<br />
 It supports i18n</p>
 <p><strong>Require FireStats >= 1.6.3</strong><br />
-<strong>Not tested on WPMU</strong></p>
+WPMU <strong>not supported</strong><br />
+WordPress 3.0 Netword <strong>not supporter for the moment</strong> but will be planned.</p>
 
 == Installation ==
 1. Upload the folder `fscharts` to the `/wp-content/plugins/` directory

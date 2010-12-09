@@ -30,6 +30,10 @@ It supports i18n</p>
 
 == Changelog ==
 
+= 1.1.3 =
+* Added index.html file in directories
+* Removed be-override.css
+
 = 1.1.2 =
 * Fixed dashboard graph size bug
 

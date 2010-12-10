@@ -2,7 +2,7 @@
 Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0
-Tested up to: 3.0.3
+Tested up to: 3.0.1
 Stable tag: 1.1.2
 
 

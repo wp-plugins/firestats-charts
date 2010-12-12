@@ -2,7 +2,7 @@
 Contributors: mArm
 Tags: firestats, statistics, charts, graph, stats, widget, admin
 Requires at least: 2.9.0
-Tested up to: 3.0.1
+Tested up to: 3.0.3
 Stable tag: 1.1.2
 
 
@@ -34,6 +34,8 @@ WordPress 3.0 Netword <strong>not supporter for the moment</strong> but will be 
 = 1.1.3 =
 * Added index.html file in directories
 * Removed be-override.css
+* Updated version number in class. Not showing right version on chart title
+* Added cache expire setting (default: 3600)
 
 = 1.1.2 =
 * Fixed dashboard graph size bug

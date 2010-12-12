@@ -3,7 +3,7 @@
 Plugin Name: FireStats Charts
 Plugin URI: http://wordpress.org/extend/plugins/firestats-charts/
 Description: Add a chart view to firestats's statistics. <strong>Require <a href="http://firestats.cc/" target="_blank">FireStats</a> > 1.6.3</strong>.
-Version: 1.1.2
+Version: 1.1.3
 Author: David "mArm" Ansermot
 Author URI: http://www.ansermot.ch
 */
@@ -60,7 +60,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		// Plugin's key
 		protected $piKey = 'wp-fscharts-pi';
     // Plugin's version
-    protected $version = '1.1.0';
+    protected $version = '1.1.3';
 		// Plugin's helper
 		protected	$helper = null;
 		// Plugin's absolute url
@@ -135,6 +135,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			if(isset($_POST[$this->piKey]) && is_array($_POST[$this->piKey])) {
 				foreach ($_POST[$this->piKey] as $key => $value) {
 					$this->vars[$key] = $value;
+					var_dump($key);
 				}
 			}
       
@@ -181,13 +182,12 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
         $installed = '1.0.0';
 
       }
- 
-      // Updates between versions
-      //
-      // if (version_compare($installed, '1.2.0', '<')) {
-      //  add_option('use_extJS', 0);
-      //  $installed = '1.2.0';
-      // }
+			
+			// Additional install - 1.1.3
+			if (version_compare($installer, '1.1.3', '<')) {
+				add_option('fscharts_cache_expire', 3600);
+				$installed = '1.1.3';
+			}
 			
 			// Update version number
 			if ($installed === null) {
@@ -336,16 +336,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		 * @since		1.1.0
 		 */
 		public function adminMenu() {
-		
 			add_options_page('FireStats Charts', 'FireStats Charts', 8, __FILE__, array(&$this, 'adminMenuOptionPage'));
-			
-			// Register additionnal css and scripts
-			wp_register_style('fsc_be_override', $this->absUrl.'css/be-override.css');
-			
-			// Inscrit les JS supplémentaires
-			//wp_register_script('JQuery', get_option('home').'/wp-includes/js/jquery/jquery.js');
-			//wp_enqueue_script('JQuery');
-
 		}
 		
 		
@@ -374,7 +365,11 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 						}
 						
 						if (isset($this->vars['height'])) {
-							update_option('fscharts_width', $this->vars['height']);
+							update_option('fscharts_height', $this->vars['height']);
+						}
+						
+						if (isset($this->vars['cache_expire'])) {
+							update_option('fscharts_cache_expire', $this->vars['cache_expire']);
 						}
 						
 					}
@@ -383,10 +378,11 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 					$params = array(
 						'width' => get_option('fscharts_width'),
 						'height' => get_option('fscharts_height'),
+						'cache_expire' => get_option('fscharts_cache_expire'),
 					);
 					
 					// Build the html
-					$html = $this->render->settingsPageHTML($params);
+					$html = $this->render->settingsPageHTML($params, _('Settings updated'));
 					
 				}
 				
@@ -494,7 +490,8 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		protected function cleanTempDirectory() {
 			
 			$directory = dirname(__FILE__).'/out/';
-			
+			$expire = get_option('fscharts_cache_expire', 3600);
+		
 			// If must make dir, return true
 			if (!is_dir($directory)) {
 				mkdir($directory);
@@ -515,7 +512,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 					$filetime = filemtime($directory.'/'.$file);
 					
 					// Delete if too old ( > 1h00)
-					if (time() - $filetime > 3600) {
+					if (time() - $filetime > $expire) {
 						unlink($directory.'/'.$file);
 					}
 				}

@@ -51,17 +51,27 @@ if (defined('_FSC')) {
 		/**
 		 * Build the settings page's html
 		 *
-		 * @param 	void
+		 * @param array $options : the options
+		 * @param array $msgs : the message list
 		 * @return 	string	The html
 		 * @access 	public
 		 */
-		public function settingsPageHTML($options) {
+		public function settingsPageHTML($options, $msgs = null) {
 		
 			$out = '<div class="wrap">
 								<div id="icon-options-general" class="icon32"><br>
 								</div>
-								<h2>'.__('FireStats Charts').' '.$this->version.' - '.__('Settings').'</h2>
-								<form method="post" action="'.$this->piRef->getAdminUrl().'"> 
+								<h2>'.__('FireStats Charts').' '.$this->version.' - '.__('Settings').'</h2>';
+								
+								if (isset($msgs) && is_array($msgs) && count($msgs) > 0) {
+									$out .= '<ul class="fscharts-msgs">';
+									foreach ($msgs as $msg) {
+										$out .= '<li>'.$msg.'</li>';
+									}
+									$out .= '</ul>';
+								}
+								
+			$out .= '<form method="post" action="'.$this->piRef->getAdminUrl().'"> 
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_submitted" name="'.$this->piRef->getPiKey().'[submitted]" value="1" />
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_task" name="'.$this->piRef->getPiKey().'[task]" value="settings" />
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_action" name="'.$this->piRef->getPiKey().'[action]" value="update" />';
@@ -79,6 +89,10 @@ if (defined('_FSC')) {
 											<p>
 												<input name="'.$this->piRef->getPiKey.'[height]" type="text" id="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
 												<label for="'.$this->piRef->getPiKey.'_height">'.__('Height').'</label>
+											</p>
+											<p>
+												<input name="'.$this->piRef->getPiKey.'[cache_expire]" type="text" id="'.$this->piRef->getPiKey().'_cache_expire" value="'.$options['cache_expire'].'" />
+												<label for="'.$this->piRef->getPiKey.'_cache_expire">'.__('Cache expire').'</label>
 											</p>
 											</fieldset></td>
 									</tr>

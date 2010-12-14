@@ -37,6 +37,7 @@ WordPress 3.0 Netword <strong>not supporter for the moment</strong> but will be 
 * Updated version number in class. Not showing right version on chart title
 * Added cache expire setting (default: 3600)
 * Fixed height not saved in settings page
+* Completly 3.0.3 compatible
 
 = 1.1.2 =
 * Fixed dashboard graph size bug

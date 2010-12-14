@@ -71,7 +71,7 @@ if (defined('_FSC')) {
 									$out .= '</ul>';
 								}
 								
-			$out .= '<form method="post" action="'.$this->piRef->getAdminUrl().'"> 
+			$out .= '<form method="post" action="'.$this->piRef->getAdminUrl().'" name="firestats-charts-settings" id="firestats-charts-settings"> 
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_submitted" name="'.$this->piRef->getPiKey().'[submitted]" value="1" />
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_task" name="'.$this->piRef->getPiKey().'[task]" value="settings" />
 									<input type="hidden" id="'.$this->piRef->getPiKey().'_action" name="'.$this->piRef->getPiKey().'[action]" value="update" />';
@@ -83,16 +83,16 @@ if (defined('_FSC')) {
 										<td><fieldset>
 											<legend class="screen-reader-text"><span>'.__('Chart').'</span></legend>
 											<p>
-												<input name="'.$this->piRef->getPiKey().'[width]" type="text" id="'.$this->piRef->getPiKey().'_width" value="'.$options['width'].'" />
+												<input name="'.$this->piRef->getPiKey().'[chart-width]" type="text" id="'.$this->piRef->getPiKey().'_width" value="'.$options['chart-width'].'" />
 												<label for="'.$this->piRef->getPiKey().'_width">'.__('Width').'</label>
 											</p>
 											<p>
-												<input name="'.$this->piRef->getPiKey.'[height]" type="text" id="'.$this->piRef->getPiKey().'_height" value="'.$options['height'].'" />
-												<label for="'.$this->piRef->getPiKey.'_height">'.__('Height').'</label>
+												<input name="'.$this->piRef->getPiKey().'[chart-height]" type="text" id="'.$this->piRef->getPiKey().'_height" value="'.$options['chart-height'].'" />
+												<label for="'.$this->piRef->getPiKey().'_height">'.__('Height').'</label>
 											</p>
 											<p>
-												<input name="'.$this->piRef->getPiKey.'[cache_expire]" type="text" id="'.$this->piRef->getPiKey().'_cache_expire" value="'.$options['cache_expire'].'" />
-												<label for="'.$this->piRef->getPiKey.'_cache_expire">'.__('Cache expire').'</label>
+												<input name="'.$this->piRef->getPiKey().'[cache-expire]" type="text" id="'.$this->piRef->getPiKey().'_cache_expire" value="'.$options['cache-expire'].'" />
+												<label for="'.$this->piRef->getPiKey().'_cache_expire">'.__('Cache expire').'</label>
 											</p>
 											</fieldset></td>
 									</tr>

@@ -135,7 +135,6 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 			if(isset($_POST[$this->piKey]) && is_array($_POST[$this->piKey])) {
 				foreach ($_POST[$this->piKey] as $key => $value) {
 					$this->vars[$key] = $value;
-					var_dump($key);
 				}
 			}
       
@@ -360,25 +359,25 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 					
 					if ($this->vars['submitted'] == 1) {
 						
-						if (isset($this->vars['width'])) {
-							update_option('fscharts_width', $this->vars['width']);
+						if (isset($this->vars['chart-width'])) {
+							update_option('fscharts_width', $this->vars['chart-width']);
 						}
 						
-						if (isset($this->vars['height'])) {
-							update_option('fscharts_height', $this->vars['height']);
+						if (isset($this->vars['chart-height'])) {
+							update_option('fscharts_height', $this->vars['chart-height']);
 						}
 						
-						if (isset($this->vars['cache_expire'])) {
-							update_option('fscharts_cache_expire', $this->vars['cache_expire']);
+						if (isset($this->vars['cache-expire'])) {
+							update_option('fscharts_cache_expire', $this->vars['cache-expire']);
 						}
 						
 					}
 					
 					// Display parameters
 					$params = array(
-						'width' => get_option('fscharts_width'),
-						'height' => get_option('fscharts_height'),
-						'cache_expire' => get_option('fscharts_cache_expire'),
+						'chart-width' => get_option('fscharts_width'),
+						'chart-height' => get_option('fscharts_height'),
+						'cache-expire' => get_option('fscharts_cache_expire'),
 					);
 					
 					// Build the html

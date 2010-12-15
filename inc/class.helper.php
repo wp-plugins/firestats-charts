@@ -16,7 +16,6 @@
 */
 
 /**
- * $Id$
  * @package	FireStats-Charts
  * @file		class.helper.php
  * @since		1.1.0
@@ -33,14 +32,43 @@ if (defined('_FSC')) {
 	// *************************************
 	final class FsChartsHelper {
 		
+		protected $piRef = null;
+		protected $piKey = '';
+		
+		/**
+		 * Constructor
+		 * 
+		 * @param $pi: The pi root ref
+		 * @return void
+		 * @access public
+		 * @since 1.1.4
+		 */
+		public function __construct(&$pi) {
+			$this->piRef = $pi;
+			$this->piKey = $pi->getPiKey();
+		}
+		
 		/**
 		 * Get a variable (POST, GET, COOKIE)
 		 *
-		 * @param 	void
-		 * @return 	void
-		 * @access 	public
+		 * @param string $var: The variable
+		 * @param mixed $default: Default value if var not found
+		 * @param string $offset : Table to search for variable (GET, POST, ALL)
+		 * @return mixed The value
+		 * @access public
+		 * @since 1.1.4
 		 */
 		public static function getVar($var, $default = null, $offset = 'ALL') {
+			
+			if (isset($_POST[$var]) && !empty($_POST[$var]) && $offset != 'GET') {
+				return $_POST[$var];
+			} 
+			
+			if (isset($_GET[$var]) && !empty($_GET[$var]) && $offset != 'POST') {
+				return $_GET[$var];
+			}
+			
+			return $default;
 			
 		}
 		

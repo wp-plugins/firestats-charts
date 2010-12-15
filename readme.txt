@@ -31,6 +31,10 @@ WordPress 3.0 Netword <strong>not supporter for the moment</strong> but will be 
 
 == Changelog ==
 
+= 1.1.4 =
+* Updated some methods
+* Moved some code in Helper
+
 = 1.1.3 =
 * Added index.html file in directories
 * Removed be-override.css

@@ -62,7 +62,7 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
     // Plugin's version
     protected $version = '1.1.3';
 		// Plugin's helper
-		protected	$helper = null;
+		protected $helper = null;
 		// Plugin's absolute url
 		protected $absUrl = '';
 		// Plugin's absolute path
@@ -123,29 +123,19 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 				}
 				// @todo : add $_POST['verbose'] support
 			}
-
-			// Get plugin's variables GET
-			if (isset($_GET[$this->piKey]) && is_array($_GET[$this->piKey])) {
-				foreach ($_GET[$this->piKey] as $key => $value) {
-					$this->vars[$key] = $value;
-				}
-			}
-
-			// Get plugin's variables POST (override GET's variables)
-			if(isset($_POST[$this->piKey]) && is_array($_POST[$this->piKey])) {
-				foreach ($_POST[$this->piKey] as $key => $value) {
-					$this->vars[$key] = $value;
-				}
-			}
       
 			// Include plugin's additional files
 			require_once($this->absPath.'inc/class.helper.php');
 			require_once($this->absPath.'inc/class.renderer.php');
+			
 			$this->render = new FsChartsRenderer($this);
+			$this->helper = new FsChartsHelper($this);
+			
+			$this->loadPiVars();
 			
       // Include jpgraph library
-      require_once($this->absPath.'res/jpgraph/jpgraph.php');
-			require_once($this->absPath.'res/jpgraph/jpgraph_line.php');
+			require_once($this->absPath.'res/jpgraph/jpgraph.php');
+		  require_once($this->absPath.'res/jpgraph/jpgraph_line.php');
 
 		}
 		
@@ -479,11 +469,40 @@ if (!class_exists('FsCharts') && !$fsChartsDisabled) {
 		
 		
 		/**
+		 * Load plugin's variables (post and get, priory post)
+		 *
+		 * @param void
+		 * @return void
+		 * @access 	protected
+		 * @since		1.1.4
+		 */
+		protected function loadPiVars() {
+			
+			// Get plugin's variables GET
+			if (isset($this->helper::getVar($this->piKey, null, 'GET')) && is_array($this->helper::getVar($this->piKey, null, 'GET'))) {
+				$getVars = $this->helper::getVar($this->piKey, null, 'GET');
+				foreach ($getVars as $key => $value) {
+					$this->vars[$key] = $value;
+				}
+			}
+
+			// Get plugin's variables POST (override GET's variables)
+			if(isset($this->helper::getVar($this->piKey, null, 'POST')) && is_array($this->helper::getVar($this->piKey, null, 'POST'))) {
+				$postVars = $this->helper::getVar($this->piKey, null, 'POST');
+				foreach ($postVars as $key => $value) {
+					$this->vars[$key] = $value;
+				}
+			}
+			
+		}
+		
+		
+		/**
 		 * Clean up temp directory
 		 *
 		 * @param 	int		$lifetime: La durée de vie d'un fichier 
 		 * @return 	bool
-		 * @access 	public
+		 * @access 	protected
 		 * @since		1.0.2
 		 */
 		protected function cleanTempDirectory() {

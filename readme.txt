@@ -1,7 +1,7 @@
 === FireStats Charts ===
 Contributors: mArm
 Tags: firestats,statistics,charts,graph,stats,widget,admin,graphic,visits
-Requires at least: 2.9.0
+Requires at least: 3.0
 Tested up to: 3.4
 Stable tag: 1.1.4
 License: GPLv2 or later

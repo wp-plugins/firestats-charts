@@ -1,9 +1,11 @@
 === FireStats Charts ===
 Contributors: mArm
-Tags: firestats, statistics, charts, graph, stats, widget, admin
+Tags: firestats,statistics,charts,graph,stats,widget,admin,graphic,visits
 Requires at least: 2.9.0
-Tested up to: 3.0.3
-Stable tag: 1.1.3
+Tested up to: 3.4
+Stable tag: 1.1.4
+License: GPLv2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
 
 This plugin adds a graphical chart of the FireStats statistics plugin on the admin dashboard
@@ -32,6 +34,7 @@ WordPress 3.0 Netword <strong>not supporter for the moment</strong> but will be 
 == Changelog ==
 
 = 1.1.4 =
+* WP 3.4 compatibility
 * Updated some methods
 * Moved some code in Helper
 

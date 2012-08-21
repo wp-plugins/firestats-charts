@@ -1,0 +1,77 @@
+# Translation of the WordPress plugin FireStats Charts 1.1.1 by David "mArm" Ansermot.
+# Copyright (C) 2010 David "mArm" Ansermot
+# This file is distributed under the same license as the FireStats Charts package.
+# DAVID ANSERMOT <DEV@ANSERMOT.CH>, 2010.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: FireStats Charts 1.1.1\n"
+"Report-Msgid-Bugs-To: http://wordpress.org/tag/firestats-charts\n"
+"POT-Creation-Date: 2010-03-16 07:13+0000\n"
+"PO-Revision-Date: 2010-MO-DA HO:MI+ZONE\n"
+"Last-Translator: DAVID ANSERMOT <DEV@ANSERMOT.CH>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. #-#-#-#-#  plugin.pot (FireStats Charts 1.1.1)  #-#-#-#-#
+#. Plugin Name of a plugin/theme
+#: firestats-charts.php:216 firestats-charts.php:222 inc/class.renderer.php:63
+msgid "FireStats Charts"
+msgstr ""
+
+#: firestats-charts.php:216
+msgid "require FireStats >= 1.6.3"
+msgstr ""
+
+#: firestats-charts.php:224
+msgid "Days"
+msgstr ""
+
+#: firestats-charts.php:225
+msgid "Count"
+msgstr ""
+
+#: firestats-charts.php:248
+msgid "FireStats Graph"
+msgstr ""
+
+#: inc/class.renderer.php:63
+msgid "Settings"
+msgstr ""
+
+#: inc/class.renderer.php:74
+msgid "Chart"
+msgstr ""
+
+#: inc/class.renderer.php:77
+msgid "Width"
+msgstr ""
+
+#: inc/class.renderer.php:81
+msgid "Height"
+msgstr ""
+
+#: inc/class.renderer.php:89
+msgid "Update settings"
+msgstr ""
+
+#. Plugin URI of a plugin/theme
+msgid "http://wordpress.org/extend/plugins/firestats-charts/"
+msgstr ""
+
+#. Description of a plugin/theme
+msgid ""
+"Add a chart view to firestats's statistics. <strong>Require <a href=\"http://"
+"firestats.cc/\" target=\"_blank\">FireStats</a> > 1.6.3</strong>."
+msgstr ""
+
+#. Author of a plugin/theme
+msgid "David \"mArm\" Ansermot"
+msgstr ""
+
+#. Author URI of a plugin/theme
+msgid "http://www.ansermot.ch"
+msgstr ""
